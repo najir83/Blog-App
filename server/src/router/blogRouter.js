@@ -12,7 +12,7 @@ dotenv.config();
 const upload = multer({ dest: "./public/uploads/" });
 const BlogRouter = express.Router();
 
-// Cloudinary config
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUDE_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,

@@ -7,11 +7,10 @@ import UserRouter from "./router/userRouter.js";
 import BlogRouter from "./router/blogRouter.js";
 import checkAuthentication from "./authService/checkauth.middlewire.js";
 import Blog from "./models/blog.model.js";
-
 dotenv.config();
-const URL = process.env.URL;
-// console.log(URL);
-connectDB(URL);
+const MONGO_URL = process.env.MONGO_URL;
+
+connectDB(MONGO_URL);
 const app = express();
 const port = process.env.PORT || 3000;
 
