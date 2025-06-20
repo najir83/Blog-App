@@ -1,5 +1,9 @@
 import express from "express";
 import User from "../authService/users.model.js";
+import multer from "multer";
+import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
+import { createTokenForUser } from "../authService/users.jwt.js";
 
 const UserRouter = express.Router();
 UserRouter.get("/", (req, res) => {
@@ -26,7 +30,6 @@ UserRouter.post("/signup", async (req, res) => {
 });
 UserRouter.post("/signin", async (req, res) => {
   const { email, password } = req.body;
-console.log(email,password);
   try {
     const token = await User.matchPasswordAndAuthenticate(email, password);
     if (!token) {
@@ -49,14 +52,14 @@ console.log(email,password);
 });
 UserRouter.post("/updatepassword", async (req, res) => {
   const { name, email, password } = req.body;
-  console.log(name,email,password);
+  // console.log(name, email, password);
   try {
     const user = await User.findOne({ name, email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
     user.password = password;
-    user.save();
+    await user.save();
 
     return res.status(200).json({ message: "update successful" });
   } catch (e) {
@@ -64,12 +67,58 @@ UserRouter.post("/updatepassword", async (req, res) => {
   }
 });
 
+const upload = multer({ dest: "./public/uploads/" });
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUDE_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRATE,
+});
+
+UserRouter.post(
+  "/update-profile",
+  upload.single("profile_pic"),
+  async (req, res) => {
+    // console.log(req.user);
+    if (!req.file) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    try {
+      const user = await User.findById(req.user?._id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const responce = await cloudinary.uploader.upload(req.file.path, {
+        folder: "blogImages",
+      });
+      fs.unlinkSync(req.file.path);
+      
+      user.profilePicture = responce.secure_url;
+      
+      user.save();
+      const token = createTokenForUser(user);
+      res.cookie("token", token, {
+        httpOnly: true, // Prevents JS access (XSS protection)
+        sameSite: "None", // allows cross-origin
+        secure: true, // required for sameSite=None to work on HTTPS (Render)
+
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+      });
+      return res
+        .status(200)
+        .json({ message: "update successful", newUrl: responce.secure_url });
+    } catch (e) {
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
 UserRouter.post("/logout", (req, res) => {
   return res
     .clearCookie("token", {
       httpOnly: true,
       secure: true,
-      sameSite: "None", // or "None" if you're using cross-origin
+      sameSite: "None",
     })
     .status(200)
     .json({ message: "logout successful" });

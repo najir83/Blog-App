@@ -10,6 +10,7 @@ function createTokenForUser(user) {
     _id: user._id,
     email: user.email,
     profilePicture: user.profilePicture,
+    createdAt:user.createdAt,
   };
 
   const token = jwt.sign(payload, SECRET, { expiresIn: "24h" });

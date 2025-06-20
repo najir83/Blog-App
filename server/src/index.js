@@ -18,16 +18,34 @@ const port = process.env.PORT || 3000;
 app.use(express.static("./public"));
 app.use(cookieParser());
 app.use(checkAuthentication("token"));
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://your-production-domain.com",
+  "https://another-allowed-domain.com",
+  process.env.ORIGIN,
+];
+
 app.use(
   cors({
-    origin: process.env.ORIGIN,
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
 
 app.get("/", async (req, res) => {
   try {
-    const blogs = await Blog.find({}).populate("created_by","_id name profilePicture");
+    const blogs = await Blog.find({}).populate(
+      "created_by",
+      "_id name profilePicture"
+    );
     return res.status(200).json({ blogs: blogs });
   } catch (e) {
     return res.status(500).json({ message: "Internal server error" });

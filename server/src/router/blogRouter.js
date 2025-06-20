@@ -19,7 +19,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRATE,
 });
 
-
 BlogRouter.get("/:id", async (req, res) => {
   try {
     const id = req.params.id;
@@ -37,14 +36,14 @@ BlogRouter.get("/:id", async (req, res) => {
   }
 });
 
-BlogRouter.post("/upload", upload.single("image"), async (req, res) => {
+BlogRouter.post("/upload",authRequire, upload.single("image"), async (req, res) => {
   try {
     const { title, content } = req.body;
     const responce = await cloudinary.uploader.upload(req.file.path, {
       folder: "blogImages",
     });
     fs.unlinkSync(req.file.path);
-    // console.log(responce.secure_url);
+    
     const blog = await Blog.create({
       title,
       content,
@@ -62,33 +61,65 @@ BlogRouter.post("/upload", upload.single("image"), async (req, res) => {
   }
 });
 
+BlogRouter.post("/update",authRequire, upload.single("image"), async (req, res) => {
+  try {
+    const { title, content, blog_id } = req.body;
+    const blog = await Blog.findById(blog_id);
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+
+    if (req.file) {
+      const responce = await cloudinary.uploader.upload(req.file.path, {
+        folder: "blogImages",
+      });
+      fs.unlinkSync(req.file.path);
+      blog.image = responce.secure_url;
+    }
+    blog.content = content;
+    blog.title = title;
+    blog.save();
+    return res.status(200).json({ message: "Update successful" });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error.. please try after some time" });
+  }
+});
+
 BlogRouter.post("/comments", authRequire, async (req, res) => {
-  // console.log(res.body);
   try {
     const { data, blog_id, created_by } = req.body;
-    // console.log(data, blog_id, created_by);
+
     if (!data || !blog_id || !created_by) {
       return res.status(404).json({ message: "All fields are required" });
     }
-   const comment= await Comment.create({
+    const comment = await Comment.create({
       data,
       blog_id,
       created_by,
     });
     console.log(comment);
-    const populatedComment = await Comment.findById(comment._id).populate('created_by',"name profilePicture");
+    const populatedComment = await Comment.findById(comment._id).populate(
+      "created_by",
+      "name profilePicture"
+    );
 
-
-    return res.status(200).json({ message: "Comment added successfully",comment: populatedComment });
+    return res.status(200).json({
+      message: "Comment added successfully",
+      comment: populatedComment,
+    });
   } catch (e) {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 });
 BlogRouter.get("/comments/:id", async (req, res) => {
   const blog_id = req.params?.id;
-  // console.log(res.body);
   try {
-    const comments = await Comment.find({ blog_id }).populate("created_by","name profilePicture");
+    const comments = await Comment.find({ blog_id }).populate(
+      "created_by",
+      "name profilePicture"
+    );
     if (!comments) {
       return res.status(404).json({ message: "Invalid blog id" });
     }
@@ -98,10 +129,9 @@ BlogRouter.get("/comments/:id", async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 });
-BlogRouter.post("/like", async (req, res) => {
+BlogRouter.post("/like",authRequire, async (req, res) => {
   try {
     const { blog_id, likes_by } = req.body;
-    // console.log(blog_id, likes_by);
     const blog = await Blog.findById(blog_id);
     if (!blog) {
       return res.status(404).json({ message: "Blog not found" });
@@ -124,14 +154,40 @@ BlogRouter.post("/like", async (req, res) => {
 BlogRouter.get("/like/:id", async (req, res) => {
   const blog_id = req.params?.id;
   try {
-    // console.log(blog_id);
-    const likes = await Like.find({ blog_id }).populate('likes_by',"name _id profilePicture");
-    // console.log(likes);
+    
+    const likes = await Like.find({ blog_id }).populate(
+      "likes_by",
+      "name _id profilePicture"
+    );
+
 
     return res.status(200).json({ likes: likes });
   } catch (e) {
     console.log(e);
     return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+BlogRouter.get("/bloglikes/:id", authRequire, async (req, res) => {
+  // return a array of ids containing liked blog_id's by id_user
+  try {
+    const id = req.params?.id;
+    const LikedBlog = await Like.find({ likes_by: id }).select("blog_id -_id");
+
+    return res.status(200).json({ LikedBlog: LikedBlog });
+  } catch (e) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+BlogRouter.delete("/:id", authRequire,async (req, res) => {
+  const id = req.params?.id;
+  try {
+    const del = await Blog.findByIdAndDelete(id);
+    await Comment.deleteMany({ blog_id: id });
+    await Like.deleteMany({ blog_id: id });
+    return res.status(200).json({ message: "Delete successful" });
+  } catch (e) {
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 
