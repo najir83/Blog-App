@@ -9,6 +9,10 @@ const UpdateBlog = () => {
   const { blogId } = useParams();
 //   console.log(blogId);
 
+  const apiKey = import.meta.env.VITE_TinyMCE_API_KEY;
+  // console.log(apiKey);
+
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
@@ -157,7 +161,7 @@ const UpdateBlog = () => {
           <h3 className="font-semibold p-2 text-xl">Content:</h3>
           <Editor
             ref={editor}
-            apiKey="pqawf9x13npibt7o162wd6n81tkzlghi6oaob8jygricfv2v"
+            apiKey={apiKey}
             value={content ||""}
             init={{
               plugins:

@@ -12,6 +12,7 @@ const options = [
 ];
 
 const Home = () => {
+  
   const [blogs, setBlogs] = useState(null);
   const [isLoading, setIsLoading] = useState(0);
   const [sortBy, setSortBy] = useState("time");

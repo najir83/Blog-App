@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import AxiosInstance from "../config/AxiosInstance";
 import useStore from "../store";
 const AddBlog = () => {
+  const apiKey = import.meta.env.VITE_TinyMCE_API_KEY;
+ 
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
@@ -127,7 +130,7 @@ const AddBlog = () => {
         <h3 className="font-semibold p-2 text-xl">Content:</h3>
         <Editor
           ref={editor}
-          apiKey="pqawf9x13npibt7o162wd6n81tkzlghi6oaob8jygricfv2v"
+          apiKey={apiKey}
           init={{
             plugins:
               "anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount",
