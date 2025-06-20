@@ -11,9 +11,10 @@ import useStore from "./store";
 import { toast, Bounce } from "react-toastify";
 import AddBlog from "./component/AddBlog";
 import ShowBlog from "./component/ShowBlog";
+import UpdateBlog from "./component/UploadBlog";
 
 function App() {
-  const { setUser, setSpin, user, userLogin } = useStore();
+  const { setUser, setSpin, user, userLogin, getTheme } = useStore();
   useEffect(() => {
     const checkLogin = async () => {
       const chk = await setUser();
@@ -32,17 +33,14 @@ function App() {
       }
       setSpin(false);
     };
-
+    getTheme();
     checkLogin();
   }, [userLogin]);
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route
-            path="/"
-            element={<Home />}
-          />
+          <Route path="/" element={<Home />} />
           <Route
             path="/login"
             element={!user ? <Login /> : <Navigate to="/" replace />}
@@ -54,7 +52,8 @@ function App() {
           <Route path="/setting" element={<Settings />} />
           <Route path="/updatepassword" element={<UpdatePassword />} />
           <Route path="/addblog" element={<AddBlog />} />
-          <Route path="/show/:showblogId" element={<ShowBlog/>}/> 
+          <Route path="/show/:showblogId" element={<ShowBlog />} />
+          <Route path="/update/:blogId" element={<UpdateBlog />} />
         </Route>
       </Routes>
     </BrowserRouter>

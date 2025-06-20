@@ -2,12 +2,25 @@ import { create } from "zustand";
 import AxiosInstance from "./config/AxiosInstance";
 
 const useStore = create((set) => ({
-  user: null,
   isReloading: false,
   userLogin: false,
   isSpin: true,
   showblogId: "6850518020d9d6e595910c3a",
+  theme: "light",
+  showLog: false,
+  showThemes: false,
+  user: null,
   
+  updateProfilePicture: (newUrl) =>
+    set((state) => ({
+      user: {
+        ...state.user,
+        profilePicture: newUrl,
+      },
+    })),
+  resetUser: () => {
+    set({ user: null });
+  },
 
   setUser: async () => {
     try {
@@ -24,6 +37,21 @@ const useStore = create((set) => ({
     } catch (e) {
       return false;
     }
+  },
+  setShowThemes: (e) => {
+    set({ showThemes: e });
+  },
+  setshowLog: (e) => {
+    set({ showLog: e });
+  },
+
+  getTheme: () => {
+    const local_theme = localStorage.getItem("bloggify-theme");
+    if (local_theme) set({ theme: local_theme });
+  },
+  setTheme: (i) => {
+    set({ theme: i });
+    localStorage.setItem("bloggify-theme", i);
   },
   setLogin: (e) => {
     set({ userLogin: e });

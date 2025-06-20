@@ -69,7 +69,7 @@ const UpdatePassword = () => {
     <div className="flex items-center justify-center h-[84vh] ">
       <form
         onSubmit={handleSubmit}
-        className="p-8 rounded-2xl shadow-lg w-full max-w-md bg-white text-gray-800"
+        className="p-8 rounded-2xl shadow-lg w-full max-w-md bg-white text-gray-800 ip"
       >
         <h2 className="text-2xl font-bold mb-6 text-center">Update Password</h2>
 
@@ -119,7 +119,7 @@ const UpdatePassword = () => {
 
         <button disabled={isUpdating}
           type="submit"
-          className="w-full bg-blue-600 cursor-pointer text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+          className="w-full bg-blue-600  btP cursor-pointer text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
         >
           Update Password
         </button>

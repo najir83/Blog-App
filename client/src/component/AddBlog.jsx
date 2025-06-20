@@ -96,13 +96,13 @@ const AddBlog = () => {
   };
 
   return (
-    <div className="w-full p-2 mx-auto overflow-scroll min-h-[84vh] ">
+    <div className="w-full p-2 mx-auto overflow-scroll min-h-[84vh]  ">
       <div className="container px-5  pb-10 lg:pb:15 lg:px-15 shadow-xl rounded-2xl mx-auto w-full">
 
       <div className="flex space-x-3 p-4">
         <h1 className="font-black text-2xl">Title:</h1>
         <input
-          className="text-2xl font-bold p-1 pl-3 border-none outline-0 bg-gray-300 rounded-lg w-[60vw]"
+          className="text-2xl ip font-bold p-1 pl-3 border-none outline-0 bg-gray-300 rounded-lg w-[60vw]"
           name="title"
           value={title}
           onChange={handleTitleChange}
@@ -132,7 +132,7 @@ const AddBlog = () => {
             plugins:
               "anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount",
             toolbar:
-              "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
+              "undo redo | blocks fontfamily fontsize forecolor backcolor | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
             // selector: "textarea", // change this value according to your HTML
             height: editorHeight,
             // content_css:'dark'

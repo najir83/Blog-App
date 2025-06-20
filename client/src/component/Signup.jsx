@@ -64,7 +64,7 @@ const Signup = () => {
     <div className="flex items-center justify-center h-[84vh] ">
       <form
         onSubmit={handleSubmit}
-        className="p-8 rounded-2xl shadow-lg w-full max-w-md bg-white text-gray-800"
+        className="p-8 rounded-2xl ip shadow-lg w-full max-w-md bg-white text-gray-800"
       >
         <h2 className="text-2xl font-bold mb-6 text-center">Signup</h2>
 
@@ -115,7 +115,7 @@ const Signup = () => {
         <button
           disabled={isSubmitting}
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+          className="w-full btP bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
         >
           {!isSubmitting ? "Create Account" : "Creating Account"}
         </button>

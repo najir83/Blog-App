@@ -2,7 +2,8 @@ import { React, useEffect, useState } from "react";
 import useStore from "../store";
 import AxiosInstance from "../config/AxiosInstance";
 import { Bounce, toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { replace, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ShowBlog = () => {
   const { user } = useStore();
@@ -16,6 +17,7 @@ const ShowBlog = () => {
   const [whoLikes, setWhoLikes] = useState(null);
   const [alreadyLikes, setAlreadyLikes] = useState(0);
   const [isLiking, setIsLiking] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getBLog = async () => {
@@ -234,8 +236,44 @@ const ShowBlog = () => {
       setIsLiking(0);
     }
   };
-
+  //  console.log(user?._id);
+  //  console.log(blog);
   // console.log(alreadyLikes);
+
+  const [isDeleting, setIdDeleting] = useState(0);
+  const handleDelete = async () => {
+    setIdDeleting(1);
+    try {
+      const res = await AxiosInstance.delete(`/blog/${showblogId}`);
+      toast.success("Blog deleted", {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      navigate("/");
+    } catch (e) {
+      toast.error("Unable to process deletion", {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    }
+  };
+  const handleEdit = () => {
+    navigate(`/update/${showblogId}`, replace);
+  };
   return (
     <div className=" w-full min-h-[85vh] max-h-full ">
       <div className="container px-5  pb-10 lg:pb:15 lg:px-30 shadow-xl rounded-2xl mx-auto w-full">
@@ -249,9 +287,27 @@ const ShowBlog = () => {
               alt="blogImage"
             />
           </div>
-          <p className="pl-1 text-sm font-bold opacity-45">
-            {blog?.blog.createdAt ? getLocalTime(blog?.blog.createdAt) : ""}
-          </p>
+          <div className="flex w-full justify-between">
+            <p className="pl-1 text-sm font-bold opacity-45">
+              {blog?.blog.createdAt ? getLocalTime(blog?.blog.createdAt) : ""}
+            </p>
+            {user?._id === blog?.blog.created_by?._id && (
+              <div className="flex gap-2">
+                <button
+                  onClick={handleEdit}
+                  className="bg-green-600 px-4  lg:px-5 lg:py-2 font-semibold py-1 text-white cursor-pointer btP hover:bg-green-700 rounded-xl"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="bg-red-600 px-2 lg:px-4 lg:py-2 font-semibold py-1 text-white cursor-pointer hover:bg-red-700 rounded-xl"
+                >
+                  delete
+                </button>
+              </div>
+            )}
+          </div>
         </div>
         <div>
           {" "}
@@ -324,12 +380,12 @@ const ShowBlog = () => {
           <div hidden={!user} className="flex py-2 gap-2 lg:gap-4 relative">
             {/* write comment  */}
             <img
-              className="w-12 h-12 lg:w-15 lg:h-15"
+              className="w-12 h-12 lg:w-15  rounded-full lg:h-15"
               src={`${user?.profilePicture || "/defaultPic.jpg"}`}
               alt="commenting"
             />
             <input
-              className="lg:text-lg pl-2 focus:ring-2 focus:ring-blue-300 w-full outline-0 rounded-2xl  bg-gray-200  pr-10 lg:pr-12 "
+              className="lg:text-lg pl-2 focus:ring-2 focus:ring-blue-300 w-full outline-0 rounded-2xl  bg-gray-200 ip  pr-10 lg:pr-12 "
               type="text"
               onChange={handleAddCommentChange}
               value={addComment}
@@ -347,7 +403,7 @@ const ShowBlog = () => {
               <div key={i} className=" p-3 pb-2 rounded-2xl">
                 <div className="flex px-2 items-center space-x-4">
                   <img
-                    className="w-12 h-12 lg:w-15 lg:h-15 rounded-2xl"
+                    className="w-12 h-12 lg:w-15 lg:h-15 rounded-full"
                     src={e.created_by.profilePicture || `/defaultPic.jpg`}
                     alt="userProfile"
                   />
