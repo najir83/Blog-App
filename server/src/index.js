@@ -23,22 +23,20 @@ const allowedOrigins = [
   "https://another-allowed-domain.com",
   process.env.ORIGIN,
 ];
-
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl)
-      if (!origin) return callback(null, true);
+      if (!origin) return callback(null, true); 
+
       if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
+        callback(null, true);
       } else {
-        return callback(new Error("Not allowed by CORS"));
+        callback(null, false); 
       }
     },
     credentials: true,
   })
 );
-
 app.get("/", async (req, res) => {
   try {
     const blogs = await Blog.find({}).populate(
