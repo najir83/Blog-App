@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import AxiosInstance from "../config/AxiosInstance";
 import useStore from "../store";
-import Loading from "./Loading";
+import SkeletonCard from "./SkeletonCard";
 import { useNavigate } from "react-router-dom";
 import { toast, Bounce } from "react-toastify";
 import Select from "react-select";
@@ -12,14 +12,12 @@ const options = [
 ];
 
 const Home = () => {
-  
   const [blogs, setBlogs] = useState(null);
-  const [isLoading, setIsLoading] = useState(0);
   const [sortBy, setSortBy] = useState("time");
   const [Mp, setMp] = useState(new Map());
-  const { setShowBLog, showblogId, user } = useStore();
+  const [likingMap, setLikingMap] = useState(new Map());
+  const { user } = useStore();
   const navigate = useNavigate();
-  const [isLiking, setIsLiking] = useState(0);
 
   const getLocalTime = (s) => {
     const options = {
@@ -31,7 +29,6 @@ const Home = () => {
       minute: "2-digit",
       hour12: true,
     };
-
     return new Date(s)
       .toLocaleString("en-GB", options)
       .replace(/, /g, " • ")
@@ -39,42 +36,42 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const getBlogs = async () => {
-      setIsLoading(1);
+    const fetchBlogs = async () => {
       try {
         const res = await AxiosInstance.get("/");
-        setBlogs(res.data.blogs);
-
-        if (user) {
-          const LikedBlogRes = await AxiosInstance.get(`/blog/bloglikes/${user._id}`);
-          const likedMap = new Map();
-          LikedBlogRes.data.LikedBlog.forEach((e) => {
-            likedMap.set(e.blog_id, 0);
-          });
-          setMp(likedMap);
-        }
+        setBlogs(res.data.blogs || []);
       } catch (err) {
-        console.log(err);
         toast.error(err.response?.message || "Internal server error", {
           position: "top-right",
           autoClose: 2500,
           theme: "light",
           transition: Bounce,
         });
-      } finally {
-        setIsLoading(0);
       }
     };
+    fetchBlogs();
+  }, []);
 
-    getBlogs();
+  useEffect(() => {
+    const fetchLikedBlogs = async () => {
+      if (!user) return;
+      try {
+        const res = await AxiosInstance.get(`/blog/bloglikes/${user._id}`);
+        const likedMap = new Map();
+        res.data.LikedBlog.forEach((e) => likedMap.set(e.blog_id, 0));
+        setMp(likedMap);
+      } catch (err) {
+        console.error("Failed to fetch liked blogs", err);
+      }
+    };
+    fetchLikedBlogs();
   }, [user]);
 
   const sortedBlogs = useMemo(() => {
     if (!blogs) return [];
     return [...blogs].sort((a, b) => {
       if (sortBy === "likes") return b.likes - a.likes;
-      if (sortBy === "time") return new Date(b.createdAt) - new Date(a.createdAt);
-      return 0;
+      return new Date(b.createdAt) - new Date(a.createdAt);
     });
   }, [blogs, sortBy]);
 
@@ -83,7 +80,7 @@ const Home = () => {
   };
 
   const handleHeartClick = async (id) => {
-    if (Mp.has(id)) return;
+    if (Mp.has(id) || likingMap.get(id)) return;
 
     if (!user) {
       toast.warn("Please Login", {
@@ -95,38 +92,42 @@ const Home = () => {
       return;
     }
 
+    const newLikingMap = new Map(likingMap);
+    newLikingMap.set(id, true);
+    setLikingMap(newLikingMap);
+
+    const newMp = new Map(Mp);
+    newMp.set(id, 1);
+    setMp(newMp);
+
+    toast.success("Like added", {
+      position: "top-right",
+      autoClose: 2500,
+      theme: "light",
+      transition: Bounce,
+    });
+
     try {
-      setIsLiking(1);
-      const newMap = new Map(Mp);
-      newMap.set(id, 1);
-      setMp(newMap);
-
-      toast.success("Like added", {
-        position: "top-right",
-        autoClose: 2500,
-        theme: "light",
-        transition: Bounce,
-      });
-
       await AxiosInstance.post("/blog/like", {
         blog_id: id,
         likes_by: user._id,
       });
-    } catch (e) {
+    } catch (err) {
       toast.error("Unable to process like", {
         position: "top-right",
         autoClose: 2500,
         theme: "light",
         transition: Bounce,
       });
+      newMp.delete(id);
+      setMp(newMp);
     } finally {
-      setIsLiking(0);
+      newLikingMap.delete(id);
+      setLikingMap(newLikingMap);
     }
   };
 
-  return isLoading ? (
-    <Loading />
-  ) : (
+  return (
     <div className="min-h-[84vh]">
       <div className="full">
         <Select
@@ -139,55 +140,58 @@ const Home = () => {
         />
       </div>
 
-      <div className="container px-5 gap-7 grid grid-cols-1 md:grid-cols-3 pb-10 lg:pb:15 lg:px-15 rounded-2xl mx-auto w-full">
-        {sortedBlogs.map((e, i) => {
-          const alreadyLikes = Mp.has(e._id);
+      <div className="container px-5 gap-7 grid grid-cols-1 md:grid-cols-3 pb-10 lg:pb-15 lg:px-15 rounded-2xl mx-auto w-full">
+        {!blogs
+          ? Array.from({ length: 6 }, (_, i) => <SkeletonCard key={i} />)
+          : sortedBlogs.map((e, i) => {
+              const alreadyLiked = Mp.has(e._id);
+              const isLiking = likingMap.get(e._id);
 
-          return (
-            <div
-              key={i}
-              className={`shadow-xl themeChangePlate rounded-2xl p-3 ${
-                i === 0 ? "pt-0" : "pt-3"
-              } pb-5 m-2`}
-            >
-              <img
-                src={e.image}
-                className="w-100 mx-auto rounded-2xl h-60 p-2"
-                alt="Blog"
-              />
-              <p className="p-3 text-lg font-serif text-gray-500">
-                {getLocalTime(e.createdAt)}
-              </p>
-              <h1 className="text-left capitalize text-xl font-bold p-2">{e.title}</h1>
-              <div
-                className="text-gray-800 themeChangePlate w-full px-2 py-3 blog-content line-clamp-3"
-                dangerouslySetInnerHTML={{ __html: e.content }}
-              ></div>
-              <div className="flex justify-between items-center">
-                <button
-                  onClick={() => handleBlogClick(i)}
-                  className="p-2 btP hover:bg-blue-700 cursor-pointer px-3 my-3 flex bg-blue-500 text-white font-semibold rounded-2xl"
+              return (
+                <div
+                  key={e._id}
+                  className={`shadow-xl themeChangePlate rounded-2xl p-3 ${
+                    i === 0 ? "pt-0" : "pt-3"
+                  } pb-5 m-2`}
                 >
-                  Read More{" "}
                   <img
-                    className="w-6 h-6 text-white"
-                    src="/right-up.png"
-                    alt="arrow"
+                    src={e.image || "/fallback.jpg"}
+                    loading="lazy"
+                    className="w-100 mx-auto rounded-2xl h-60 p-2 object-cover"
+                    alt="Blog"
                   />
-                </button>
-                <i
-                  onClick={() => handleHeartClick(e._id)}
-                  className={`fa-${alreadyLikes ? "solid" : "regular"} fa-heart ${
-                    alreadyLikes ? "text-pink-600" : ""
-                  } ${isLiking ? "pointer-events-none" : ""} cursor-pointer`}
-                >
-                  {" "}
-                  {e.likes + (Mp.has(e._id) ? Mp.get(e._id) : 0)}
-                </i>
-              </div>
-            </div>
-          );
-        })}
+                  <p className="p-3 text-lg font-serif text-gray-500">
+                    {getLocalTime(e.createdAt)}
+                  </p>
+                  <h1 className="text-left capitalize text-xl font-bold p-2">{e.title}</h1>
+                  <div className="text-gray-800 themeChangePlate w-full px-2 py-3 blog-content line-clamp-3">
+                    {e.description || e.content.replace(/<[^>]+>/g, '').slice(0, 200)}...
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <button
+                      onClick={() => handleBlogClick(i)}
+                      className="p-2 btP hover:bg-blue-700 cursor-pointer px-3 my-3 flex bg-blue-500 text-white font-semibold rounded-2xl"
+                    >
+                      Read More
+                      <img
+                        className="w-6 h-6 ml-2"
+                        src="/right-up.png"
+                        alt="arrow"
+                      />
+                    </button>
+                    <i
+                      onClick={() => handleHeartClick(e._id)}
+                      className={`fa-${alreadyLiked ? "solid" : "regular"} fa-heart ${
+                        alreadyLiked ? "text-pink-600" : ""
+                      } ${isLiking ? "pointer-events-none" : ""} cursor-pointer`}
+                    >
+                      {" "}
+                      {e.likes + (alreadyLiked ? Mp.get(e._id) : 0)}
+                    </i>
+                  </div>
+                </div>
+              );
+            })}
       </div>
     </div>
   );
