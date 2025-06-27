@@ -19,7 +19,7 @@ app.use(cookieParser());
 app.use(checkAuthentication("token"));
 const allowedOrigins = [
   "http://localhost:3000",
-  " http://localhost:5173",
+  "http://localhost:5173",
   "https://your-production-domain.com",
   "https://another-allowed-domain.com",
   process.env.ORIGIN,
