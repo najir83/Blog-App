@@ -18,20 +18,20 @@ function App() {
   useEffect(() => {
     const checkLogin = async () => {
       const chk = await setUser();
-      if (!chk) {
-        toast.info("Please login to add a blog", {
-          position: "top-right",
-          autoClose: 2500,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
-      }
-      setSpin(false);
+      // if (!chk) {
+      //   toast.info("Please login to add a blog", {
+      //     position: "top-right",
+      //     autoClose: 2500,
+      //     hideProgressBar: false,
+      //     closeOnClick: false,
+      //     pauseOnHover: true,
+      //     draggable: true,
+      //     progress: undefined,
+      //     theme: "light",
+      //     transition: Bounce,
+      //   });
+      // }
+      // setSpin(false);
     };
     getTheme();
     checkLogin();

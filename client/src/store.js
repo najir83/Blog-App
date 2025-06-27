@@ -4,7 +4,7 @@ import AxiosInstance from "./config/AxiosInstance";
 const useStore = create((set) => ({
   isReloading: false,
   userLogin: false,
-  isSpin: true,
+  isSpin: 0,
   showblogId: "6850518020d9d6e595910c3a",
   theme: "light",
   showLog: false,

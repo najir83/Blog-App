@@ -64,7 +64,7 @@ const Signup = () => {
     <div className="flex items-center justify-center h-[84vh] ">
       <form
         onSubmit={handleSubmit}
-        className="p-8 rounded-2xl ip shadow-lg w-full max-w-md bg-white text-gray-800"
+        className="p-8 rounded-2xl ip shadow-lg w-[83vw] lg:w-full max-w-md bg-white text-gray-800"
       >
         <h2 className="text-2xl font-bold mb-6 text-center">Signup</h2>
 

@@ -182,9 +182,9 @@ const UpdateBlog = () => {
 
         <button
           onClick={handleSubmit}
-          className="mt-6 bg-blue-600 cursor-pointer text-white px-6 py-2 rounded hover:bg-blue-700"
+          className="mt-6 btP bg-blue-600 cursor-pointer text-white px-6 py-2 rounded hover:bg-blue-700"
         >
-          Send
+          Update
         </button>
       </div>
     </div>
