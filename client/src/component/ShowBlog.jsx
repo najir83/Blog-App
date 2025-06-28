@@ -4,6 +4,7 @@ import AxiosInstance from "../config/AxiosInstance";
 import { Bounce, toast } from "react-toastify";
 import { replace, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import SeeBlogSkeleton from "./SeeBlogSkeleton";
 
 const ShowBlog = () => {
   const { user } = useStore();
@@ -274,7 +275,9 @@ const ShowBlog = () => {
   const handleEdit = () => {
     navigate(`/update/${showblogId}`, replace);
   };
-  return (
+  return !blog ? (
+    <SeeBlogSkeleton />
+  ) : (
     <div className=" w-full min-h-[85vh] max-h-full ">
       <div className="container px-5  pb-10 lg:pb:15 lg:px-30 shadow-xl rounded-2xl mx-auto w-full">
         <div className=" flex flex-col  justify-center p-5 gap-5 ">
@@ -284,7 +287,7 @@ const ShowBlog = () => {
             <img
               className=" shadow-md w-150 h-70 lg:w-200 lg:h-100 rounded-xl  shadow-white"
               src={`${blog?.blog.image}`}
-              alt="blogImage"
+              alt="blogImage" loading="lazy"
             />
           </div>
           <div className="flex w-full justify-between">
@@ -295,16 +298,18 @@ const ShowBlog = () => {
               <div className="flex gap-2">
                 <button
                   onClick={handleEdit}
-                  className="bg-green-600 px-4  lg:px-5 lg:py-2 font-semibold py-1 text-white cursor-pointer btP hover:bg-green-700 rounded-xl"
+                  className="bg-green-600 px-3 md:text-xl fa-regular fa-pen-to-square  lg:px-4 lg:py-2 font-semibold py-1 text-white cursor-pointer btP hover:bg-green-700 rounded-xl"
                 >
-                  Edit
+             
                 </button>
+                {/* <i class="fa-regular fa-pen-to-square"></i> */}
                 <button
                   onClick={handleDelete}
-                  className="bg-red-600 px-2 lg:px-4 lg:py-2 font-semibold py-1 text-white cursor-pointer hover:bg-red-700 rounded-xl"
+                  className="bg-red-600 fa-regular md:text-xl fa-trash-can px-2 lg:px-4 lg:py-2 font-semibold py-1 text-white cursor-pointer hover:bg-red-700 rounded-xl"
                 >
-                  delete
+                 
                 </button>
+                {/* <i class="fa-regular fa-trash-can"></i> */}
               </div>
             )}
           </div>
