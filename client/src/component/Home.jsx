@@ -99,7 +99,7 @@ const Home = () => {
     const newMp = new Map(Mp);
     newMp.set(id, 1);
     setMp(newMp);
-
+  
     toast.success("Like added", {
       position: "top-right",
       autoClose: 2500,

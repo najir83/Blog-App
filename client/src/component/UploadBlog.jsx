@@ -7,11 +7,10 @@ import useStore from "../store";
 const UpdateBlog = () => {
   const { setSpin } = useStore();
   const { blogId } = useParams();
-//   console.log(blogId);
+  //   console.log(blogId);
 
   const apiKey = import.meta.env.VITE_TinyMCE_API_KEY;
   // console.log(apiKey);
-
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -22,20 +21,25 @@ const UpdateBlog = () => {
 
   useEffect(() => {
     const getBLog = async () => {
-
       try {
-      
-        setTimeout(async() => {
-            
-            const res = await AxiosInstance.get(`/blog/${blogId}`);
-            // console.log(res.data);
-            setTitle(res.data.blog.title);
-            setContent(res.data.blog.content);
-          }, 2000);
-        } catch (e) {
-          console.log(e);
-        }
-       
+        const res = await AxiosInstance.get(`/blog/${blogId}`);
+        // console.log(res.data);
+        setTitle(res.data.blog.title);
+        setContent(res.data.blog.content);
+      } catch (e) {
+        toast.warn("Please refresh the page ", {
+          position: "top-right",
+          autoClose: 2500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+        console.log(e);
+      }
     };
 
     getBLog();
@@ -51,11 +55,8 @@ const UpdateBlog = () => {
     window.addEventListener("resize", updateHeight); // Update on resize
 
     return () => window.removeEventListener("resize", updateHeight);
-  }, [content,setContent]); 
+  }, [content, setContent]);
   const editor = useRef(null);
-
-
-
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -154,7 +155,12 @@ const UpdateBlog = () => {
             />
           </div>
         ) : (
-          <button onClick={()=>setImageRequired(1)} className="bg-green-500 px-5 py-2 cursor-pointer hover:bg-green-700 rounded-2xl text-amber-50 btP font-bold ml-5 my-4">Change Image</button>
+          <button
+            onClick={() => setImageRequired(1)}
+            className="bg-green-500 px-5 py-2 cursor-pointer hover:bg-green-700 rounded-2xl text-amber-50 btP font-bold ml-5 my-4"
+          >
+            Change Image
+          </button>
         )}
 
         <div className="">
@@ -162,21 +168,20 @@ const UpdateBlog = () => {
           <Editor
             ref={editor}
             apiKey={apiKey}
-            value={content ||""}
+            value={content || ""}
             init={{
               plugins:
                 "anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount",
               toolbar:
                 "undo redo | blocks fontfamily fontsize forecolor backcolor | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
-            //   selector: "textarea", // change this value according to your HTML
+              //   selector: "textarea", // change this value according to your HTML
               height: editorHeight,
-              content_css:'ip',
+              content_css: "ip",
               content_style:
                 "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }",
             }}
             initialValue="Welcome to Blogify"
             onEditorChange={(newContent) => setContent(newContent)}
-    
           />
         </div>
 
