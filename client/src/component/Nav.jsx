@@ -20,8 +20,9 @@ const Nav = () => {
 
   const uparrow = "fa-solid fa-angle-up";
   const downarrow = "fa-solid fa-angle-down";
-  const bars = "fa-solid fa-bars";
+  const bars = "fa-solid fa-ellipsis-vertical";
   const cross = "fa-solid fa-xmark";
+  // <i class="fa-solid fa-ellipsis-vertical"></i>
 
   // console.log(user);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
@@ -163,11 +164,17 @@ const Nav = () => {
         <li className="flex flex-col items-center justify-center ">
           <div className="flex items-center space-x-2">
             <img
-              className="w-10 h-10 rounded-full"
+              onClick={() => {
+                if (!showLog) {
+                  setShowThemes(0);
+                }
+                setshowLog((prev) => !prev);
+              }}
+              className="w-10 h-10 cursor-pointer rounded-full"
               src={user?.profilePicture || "/defaultPic.jpg"}
               alt="default"
             />
-            <i
+            {/* <i
               onClick={() => {
                 if (!showLog) {
                   setShowThemes(0);
@@ -175,7 +182,7 @@ const Nav = () => {
                 setshowLog((prev) => !prev);
               }}
               className={`cursor-pointer text-lg ${showLog ? cross : bars}`}
-            ></i>
+            ></i> */}
           </div>
         </li>
         <div
@@ -197,15 +204,15 @@ const Nav = () => {
             </NavLink>
           )}
           {!user && isMobile && (
-          <>
-            <NavLink to="/signup" className={navLinkClass}>
-              SignUp
-            </NavLink>
-            <NavLink to="/login" className={navLinkClass}>
-              Login
-            </NavLink>
-          </>
-        )}
+            <>
+              <NavLink to="/signup" className={navLinkClass}>
+                SignUp
+              </NavLink>
+              <NavLink to="/login" className={navLinkClass}>
+                Login
+              </NavLink>
+            </>
+          )}
 
           {user && isMobile && (
             <NavLink to="/addblog" className={navLinkClass}>
