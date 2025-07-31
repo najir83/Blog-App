@@ -99,7 +99,7 @@ const Home = () => {
     const newMp = new Map(Mp);
     newMp.set(id, 1);
     setMp(newMp);
-  
+
     toast.success("Like added", {
       position: "top-right",
       autoClose: 2500,
@@ -163,9 +163,13 @@ const Home = () => {
                   <p className="p-3 text-lg font-serif text-gray-500">
                     {getLocalTime(e.createdAt)}
                   </p>
-                  <h1 className="text-left capitalize text-xl font-bold p-2">{e.title}</h1>
+                  <h1 className="text-left capitalize text-xl font-bold p-2">
+                    {e.title}
+                  </h1>
                   <div className="text-gray-800 themeChangePlate w-full px-2 py-3 blog-content line-clamp-3">
-                    {e.description || e.content.replace(/<[^>]+>/g, '').slice(0, 200)}...
+                    {e.description ||
+                      e.content.replace(/<[^>]+>/g, "").slice(0, 200)}
+                    ...
                   </div>
                   <div className="flex justify-between items-center">
                     <button
@@ -181,9 +185,11 @@ const Home = () => {
                     </button>
                     <i
                       onClick={() => handleHeartClick(e._id)}
-                      className={`fa-${alreadyLiked ? "solid" : "regular"} fa-heart ${
-                        alreadyLiked ? "text-pink-600" : ""
-                      } ${isLiking ? "pointer-events-none" : ""} cursor-pointer`}
+                      className={`fa-${
+                        alreadyLiked ? "solid" : "regular"
+                      } fa-heart ${alreadyLiked ? "text-pink-600" : ""} ${
+                        isLiking ? "pointer-events-none" : ""
+                      } cursor-pointer`}
                     >
                       {" "}
                       {e.likes + (alreadyLiked ? Mp.get(e._id) : 0)}

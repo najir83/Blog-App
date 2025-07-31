@@ -20,7 +20,7 @@ const Nav = () => {
 
   const uparrow = "fa-solid fa-angle-up";
   const downarrow = "fa-solid fa-angle-down";
-  const bars = "fa-solid fa-ellipsis-vertical";
+  const bars = "fa-solid fa-bars";
   const cross = "fa-solid fa-xmark";
   // <i class="fa-solid fa-ellipsis-vertical"></i>
 
@@ -174,7 +174,7 @@ const Nav = () => {
               src={user?.profilePicture || "/defaultPic.jpg"}
               alt="default"
             />
-            {/* <i
+          {isMobile &&  <i
               onClick={() => {
                 if (!showLog) {
                   setShowThemes(0);
@@ -182,7 +182,7 @@ const Nav = () => {
                 setshowLog((prev) => !prev);
               }}
               className={`cursor-pointer text-lg ${showLog ? cross : bars}`}
-            ></i> */}
+            ></i>}
           </div>
         </li>
         <div
