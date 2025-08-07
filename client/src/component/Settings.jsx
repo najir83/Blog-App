@@ -3,6 +3,7 @@ import image from "/defaultPic.jpg";
 import useStore from "../store";
 import { toast, Bounce } from "react-toastify";
 import AxiosInstance from "../config/AxiosInstance";
+import { motion } from "motion/react";
 const Settings = () => {
   const { user, setSpin, updateProfilePicture } = useStore();
   //   console.log(user)
@@ -11,7 +12,7 @@ const Settings = () => {
   const fileInputRef = useRef();
 
   const handleImageClick = () => {
-     if (!user) {
+    if (!user) {
       toast.warn("Please login", {
         position: "top-right",
         autoClose: 2500,
@@ -119,7 +120,12 @@ const Settings = () => {
   };
   return (
     <div className="min-h-[84vh] ">
-      <div className="w-[95vw] lg:w-[25vw] min-h-[70vh] mx-auto  flex justify-center  h-full">
+      <motion.div
+        initial={{ opacity: 0.1 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="w-[95vw] lg:w-[25vw] min-h-[70vh] mx-auto  flex justify-center  h-full"
+      >
         <div className=" w-200 flex flex-col rounded-2xl justify-around  shadow-xl ">
           <div className=" p-3 flex  justify-between">
             <div className="w-full flex flex-col items-center">
@@ -166,7 +172,7 @@ const Settings = () => {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

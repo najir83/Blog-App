@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import useStore from "../store";
 import AxiosInstance from "../config/AxiosInstance";
 import { toast, Bounce } from "react-toastify";
+import { motion } from "motion/react";
 const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -62,7 +63,11 @@ const Signup = () => {
 
   return (
     <div className="flex items-center justify-center h-[84vh] ">
-      <form
+      <motion.form
+        transition={{ duration: 2 }}
+        initial={{ opacity: 0.1 }}
+        
+        whileInView={{ opacity: 1 }}
         onSubmit={handleSubmit}
         className="p-8 rounded-2xl ip shadow-lg w-[83vw] lg:w-full max-w-md bg-white text-gray-800"
       >
@@ -126,7 +131,7 @@ const Signup = () => {
             Login
           </a>
         </p>
-      </form>
+      </motion.form>
     </div>
   );
 };

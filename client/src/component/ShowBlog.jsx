@@ -5,7 +5,7 @@ import { Bounce, toast } from "react-toastify";
 import { replace, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import SeeBlogSkeleton from "./SeeBlogSkeleton";
-
+import { motion } from "motion/react";
 const ShowBlog = () => {
   const { user } = useStore();
   const { showblogId } = useParams();
@@ -279,7 +279,7 @@ const ShowBlog = () => {
     <SeeBlogSkeleton />
   ) : (
     <div className=" w-full min-h-[85vh] max-h-full ">
-      <div className="container px-5  pb-10 lg:pb:15 lg:px-30 shadow-xl rounded-2xl mx-auto w-full">
+      <motion.div animate={{opacity:[.2,1]}} transition={{duration:2}} className="container px-5  pb-10 lg:pb:15 lg:px-30 shadow-xl rounded-2xl mx-auto w-full">
         <div className=" flex flex-col  justify-center p-5 gap-5 ">
           {/* top  */}
 
@@ -405,7 +405,7 @@ const ShowBlog = () => {
             // console.log(e);
 
             return (
-              <div key={i} className=" p-3 pb-2 rounded-2xl">
+              <motion.div initial={{y:80,opacity:.1}} whileInView={{y:0,opacity:1}} transition={{duration:2}}  key={i} className=" p-3 pb-2 rounded-2xl">
                 <div className="flex px-2 items-center space-x-4">
                   <img
                     className="w-12 h-12 lg:w-15 lg:h-15 rounded-full"
@@ -418,11 +418,11 @@ const ShowBlog = () => {
                   <p>{e.data}</p>
                   <p className="text-sm opacity-45">{timeAgo(e.createdAt)}</p>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

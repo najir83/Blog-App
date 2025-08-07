@@ -5,7 +5,7 @@ import SkeletonCard from "./SkeletonCard";
 import { useNavigate } from "react-router-dom";
 import { toast, Bounce } from "react-toastify";
 import Select from "react-select";
-
+import { motion } from "motion/react";
 const options = [
   { value: "time", label: "Sort by -Time" },
   { value: "likes", label: "Sort by -Likes" },
@@ -148,7 +148,10 @@ const Home = () => {
               const isLiking = likingMap.get(e._id);
 
               return (
-                <div
+                <motion.div
+                  initial={{ y: 0, opacity: 0.1 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 2 }}
                   key={e._id}
                   className={`shadow-xl themeChangePlate rounded-2xl p-3 ${
                     i === 0 ? "pt-0" : "pt-3"
@@ -195,7 +198,7 @@ const Home = () => {
                       {e.likes + (alreadyLiked ? Mp.get(e._id) : 0)}
                     </i>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
       </div>

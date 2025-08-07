@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import AxiosInstance from "../config/AxiosInstance";
 import { toast, Bounce, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-
+import { motion } from "motion/react";
 
 const UpdatePassword = () => {
   const [formData, setFormData] = useState({
@@ -67,7 +67,11 @@ const UpdatePassword = () => {
     </div>
   ) : (
     <div className="flex items-center justify-center h-[84vh] ">
-      <form
+      <motion.form
+              transition={{ duration: 2 }}
+              initial={{ opacity: 0.1 }}
+              
+              whileInView={{ opacity: 1 }}
         onSubmit={handleSubmit}
         className="p-8 rounded-2xl shadow-lg w-[83vw] lg:w-full max-w-md bg-white text-gray-800 ip"
       >
@@ -123,7 +127,7 @@ const UpdatePassword = () => {
         >
           Update Password
         </button>
-      </form>
+      </motion.form>
     </div>
   );
 };
