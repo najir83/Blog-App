@@ -6,22 +6,35 @@ import { useEffect } from "react";
 import Loading from "./component/Loading";
 import { ToastContainer, Bounce } from "react-toastify";
 export default function Layout() {
-  const { user,isSpin, theme,showThemes, setShowThemes, showLog, setshowLog } = useStore();
+  const {
+    user,
+    isSpin,
+    theme,
+    showThemes,
+    setShowThemes,
+    showLog,
+    setshowLog,
+    eventNone
+  } = useStore();
   useEffect(() => {
     return () => {};
-  }, [ theme]);
+  }, [theme]);
 
   const handleBodyClick = () => {
     // alert("body click")
     if (showLog) {
       setshowLog(0);
     }
-    if(showThemes)setShowThemes(0);
+    if (showThemes) setShowThemes(0);
   };
   return isSpin ? (
     <Loading />
   ) : (
-    <div  onClick={handleBodyClick} data-theme={theme}>
+    <div
+      className={`${eventNone && 'pointer-events-none'}`}
+      onClick={handleBodyClick}
+      data-theme={theme}
+    >
       <ToastContainer
         position="top-right"
         autoClose={5000}

@@ -10,7 +10,10 @@ const useStore = create((set) => ({
   showLog: false,
   showThemes: false,
   user: null,
-  
+  eventNone: false,
+  setEventNone: (i) => {
+    set({ eventNone: i });
+  },
   updateProfilePicture: (newUrl) =>
     set((state) => ({
       user: {
