@@ -67,18 +67,18 @@ const Nav = () => {
     try {
       setEventNone(true);
       const res = await AxiosInstance.post("/user/logout");
-      setLogin(0);
-      toast.success("Logout Successful", {
-        position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
+      // setLogin(0);
+      // toast.success("Logout Successful", {
+      //   position: "top-right",
+      //   autoClose: 2500,
+      //   hideProgressBar: false,
+      //   closeOnClick: false,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: "light",
+      //   transition: Bounce,
+      // });
       setTimeout(() => {
         window.location.reload();
       }, 2000); // refresh after 2 seconds

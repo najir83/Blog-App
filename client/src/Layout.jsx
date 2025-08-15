@@ -31,7 +31,7 @@ export default function Layout() {
     <Loading />
   ) : (
     <div
-      className={`${eventNone && 'pointer-events-none'}`}
+      className={`${eventNone && 'opacity-50 pointer-events-none'}`}
       onClick={handleBodyClick}
       data-theme={theme}
     >
