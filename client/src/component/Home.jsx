@@ -156,6 +156,7 @@ const Home = () => {
                   className={`shadow-xl themeChangePlate rounded-2xl p-3 ${
                     i === 0 ? "pt-0" : "pt-3"
                   } pb-5 m-2`}
+                    
                 >
                   <img
                     src={e.image || "/fallback.jpg"}

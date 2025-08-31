@@ -108,11 +108,13 @@ const Nav = () => {
     }`;
 
   return (
-    <div>
-      <div className="top-0  w-full h-[8vh] flex justify-between px-4 lg:px-73 items-center bg-[#077A7D] ip2">
-        <Link to="/" className="font-bold text-xl">
-          <span className="text-2xl text-[#7AE2CF]">&lt;</span> Blogify{" "}
-          <span className="text-2xl text-[#7AE2CF]">/&gt;</span>
+    <div className="sticky top-0 z-40">
+      <div className=" w-full h-[8vh] flex justify-between px-4 lg:px-73 items-center bg-[#077A7D] ip2">
+        <Link to="/" className="flex">
+        <div className="lg:w-5 lg:h-5 h-3 w-3 flex items-center justify-center"><img  src="public/icons/blogify.png"></img> </div>
+          <h1 class="text-2xl font-black bg-gradient-to-r from-green-300 to-cyan-300 bg-clip-text text-transparent">
+           Blogify
+          </h1>
         </Link>
 
         <ul className="  select-none flex space-x-3 lg:space-x-6 items-center">
@@ -190,7 +192,7 @@ const Nav = () => {
                     }
                     setshowLog((prev) => !prev);
                   }}
-                  className={`cursor-pointer text-lg ${showLog ? cross : bars}`}
+                  className={`cursor-pointer ${!showLog ? "text-lg": "text-xl"} ${showLog ? cross : bars}`}
                 ></i>
               )}
             </div>
@@ -237,7 +239,7 @@ const Nav = () => {
             {user && (
               <button
                 onClick={handleLogout}
-                className="hover:font-bold p-3 lg:text-xl py-2 bg-amber-700 rounded-2xl cursor-pointer hover:bg-amber-800 text-white shadow-lg"
+                className="hover:font-bold p-3 lg:text-xl py-2 bg-amber-700 px-6 cursor-pointer hover:bg-amber-800 text-white shadow-lg"
               >
                 Logout
               </button>
