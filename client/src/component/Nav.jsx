@@ -111,7 +111,7 @@ const Nav = () => {
     <div className="sticky top-0 z-40">
       <div className=" w-full h-[8vh] flex justify-between px-4 lg:px-73 items-center bg-[#077A7D] ip2">
         <Link to="/" className="flex">
-        <div className="lg:w-5 lg:h-5 h-3 w-3 flex items-center justify-center"><img  src="public/icons/blogify.png"></img> </div>
+        <div className="lg:w-5 lg:h-5 h-3 w-3 flex items-center justify-center"><img  src="/icons/blogify.png" alt="logo"></img> </div>
           <h1 class="text-2xl font-black bg-gradient-to-r from-green-300 to-cyan-300 bg-clip-text text-transparent">
            Blogify
           </h1>
